@@ -58,6 +58,12 @@ try:
 
     print(f"Successfully navigated to saved posts of user: {config.cred['user']}")
 
+
+#######################
+    burgur_menu = driver.find_element(By.XPATH, "//svg[@aria-label='Settings' and @class='x1lliihq x1n2onr6 x5n08af']")
+    burgur_menu.click()
+###########################
+
     # Optionally, wait for a while to simulate being on the saved posts page
     time.sleep(500)
 
