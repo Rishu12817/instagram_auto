@@ -9,7 +9,11 @@ import config
 
 # Set up the Service object with the path to the updated chromedriver
 # service = Service('C:/chromedriver-win64/chromedriver.exe')  # Updated path to the new ChromeDriver
-service = Service("C:\chromedriver-win64\chromedriver.exe")  # Updated path to the new ChromeDriver
+# service = Service("C:\chromedriver-win64\chromedriver.exe") 
+# service = Service(r"C:\chromedriver-win64\chromedriver.exe")  # Using a raw string
+# or
+service = Service("C:\\chromedriver-win64\\chromedriver.exe")  # Using double backslashes
+ # Updated path to the new ChromeDriver
 # service = Service('C:/chromedriver-win64/chromedriver.exe')  # Updated path to the new ChromeDriver
 
 
@@ -93,24 +97,30 @@ try:
     post_elements = driver.find_elements(By.XPATH, posts_xpath)
     total_posts = len(post_elements)
     print(f"Found {total_posts} posts.")
-
+    print(f"Found {total_posts} posts.")
+    
     # Iterate over each post
     for i in range(total_posts):
-        # Re-find the elements on the page to avoid stale references
+        # if i == 0: continue
         posts = driver.find_elements(By.XPATH, posts_xpath)
         
-        # Optional: Scroll the element into view
         post = posts[i]
+        href = post.get_attribute("href")
+        
+        # Skip if the URL doesn't look like a normal post URL
+        if "/p/" not in href:
+            print(f"Skipping post {i + 1} due to invalid URL: {href}")
+            continue
+
         driver.execute_script("arguments[0].scrollIntoView(true);", post)
-        
-        # Click on the post element
         post.click()
+        time.sleep(5)
         
+        print("\nClicked on:", post)
         print("Current URL before wait:", driver.current_url)
-        WebDriverWait(driver, 20).until(lambda d: d.current_url != posts_list_url)
-        print("Current URL after wait:", driver.current_url)
         
-        # Print the current URL (which should be the URL of the clicked post)
+        # WebDriverWait(driver, 20).until(lambda d: d.current_url != posts_list_url)
+        # print("Current URL after wait:", driver.current_url)
         print(f"Post {i + 1} URL: {driver.current_url}")
         
         # Go back to the posts list
@@ -121,6 +131,7 @@ try:
             EC.presence_of_all_elements_located((By.XPATH, posts_xpath))
         )
         time.sleep(2)
+        print(f"---post no. {i}----------Process Ended-----------------\n\n")
 
 ######################################################################################
     time.sleep(2)
@@ -132,5 +143,5 @@ except KeyboardInterrupt as e:
 
 finally:
     # Close the browser
-    # driver.quit()
+    driver.quit()
     print("Completed successfully")
