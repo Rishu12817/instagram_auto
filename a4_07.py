@@ -61,7 +61,7 @@ try:
     burgur_menu = driver.find_element(By.XPATH, "//span[contains(text(), 'More')]")
     burgur_menu.click()
 ###########################
-    time.sleep(5)
+    time.sleep(3)
 #######################
     saved_menu = driver.find_element(By.XPATH, "//span[contains(text(), 'Saved')]")
     saved_menu.click()
@@ -74,8 +74,58 @@ try:
     print("Successfully navigated into saved posts col")
 ###########################
     time.sleep(2)
+    
 
-    time.sleep(500)
+#######################
+
+
+    # Store the posts list page URL so we can detect navigation changes
+    posts_list_url = driver.current_url
+    # Define an XPath that uniquely selects each of the clickable post elements.
+    posts_xpath = "//a[contains(@class, '_a6hd') and @role='link']"
+
+    # Wait until the posts are loaded
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_all_elements_located((By.XPATH, posts_xpath))
+    )
+
+    # Get the total number of posts
+    post_elements = driver.find_elements(By.XPATH, posts_xpath)
+    total_posts = len(post_elements)
+    print(f"Found {total_posts} posts.")
+
+    # Iterate over each post
+    for i in range(total_posts):
+        # Re-find the elements on the page to avoid stale references
+        posts = driver.find_elements(By.XPATH, posts_xpath)
+        
+        # Optional: Scroll the element into view
+        post = posts[i]
+        driver.execute_script("arguments[0].scrollIntoView(true);", post)
+        
+        # Click on the post element
+        post.click()
+        
+        print("Current URL before wait:", driver.current_url)
+        WebDriverWait(driver, 20).until(lambda d: d.current_url != posts_list_url)
+        print("Current URL after wait:", driver.current_url)
+        
+        # Print the current URL (which should be the URL of the clicked post)
+        print(f"Post {i + 1} URL: {driver.current_url}")
+        
+        # Go back to the posts list
+        driver.back()
+        
+        # Wait until we are back on the posts list
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.XPATH, posts_xpath))
+        )
+        time.sleep(2)
+
+######################################################################################
+    time.sleep(2)
+
+    # time.sleep(500)
     # Optionally, wait for a while to simulate being on the saved posts page
 except KeyboardInterrupt as e:
     print(" keyboard interrupt detected ")
