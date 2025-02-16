@@ -8,15 +8,9 @@ import time
 import config
 
 # Set up the Service object with the path to the updated chromedriver
-# service = Service('C:/chromedriver-win64/chromedriver.exe')  # Updated path to the new ChromeDriver
-# service = Service("C:\chromedriver-win64\chromedriver.exe") 
 # service = Service(r"C:\chromedriver-win64\chromedriver.exe")  # Using a raw string
 # or
-service = Service("C:\\chromedriver-win64\\chromedriver.exe")  # Using double backslashes
- # Updated path to the new ChromeDriver
-# service = Service('C:/chromedriver-win64/chromedriver.exe')  # Updated path to the new ChromeDriver
-
-
+service = Service("C:\\chromedriver-win64\\chromedriver.exe")
 # Set up Chrome options
 options = Options()
 options.add_argument('--start-maximized')
@@ -50,17 +44,7 @@ try:
     )
     print("Login successful!")
 ###################### log in finishes ##############################
-
-
     time.sleep(10)
-        
-    # # Now, construct the URL for the saved posts page
-    # saved_posts_url = f"https://www.instagram.com/{config.cred['user']}/saved/"
-    # # Navigate to the saved posts section
-    # driver.get(saved_posts_url)
-    # print(f"Successfully navigated to saved posts of user: {config.cred['user']}")
-
-
 #######################
     burgur_menu = driver.find_element(By.XPATH, "//span[contains(text(), 'More')]")
     burgur_menu.click()
@@ -78,11 +62,8 @@ try:
     print("Successfully navigated into saved posts col")
 ###########################
     time.sleep(2)
-    
-
 #######################
-
-
+#########ittrated over the post ##############
     # Store the posts list page URL so we can detect navigation changes
     posts_list_url = driver.current_url
     # Define an XPath that uniquely selects each of the clickable post elements.
@@ -133,6 +114,7 @@ try:
         time.sleep(2)
         print(f"---post no. {i}----------Process Ended-----------------\n\n")
 
+#########ittrated over the post ##############
 ######################################################################################
     time.sleep(2)
 
