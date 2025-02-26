@@ -97,6 +97,7 @@ try:
         driver.execute_script("arguments[0].scrollIntoView(true);", post)
         post.click()
         time.sleep(5)
+        time.sleep(50)
         
         print("\nClicked on:", post)
         print("Current URL before wait:", driver.current_url)
