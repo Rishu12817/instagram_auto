@@ -9,7 +9,7 @@ from selenium.common.exceptions import TimeoutException
 import time
 import config
 flag = False
-loop_time = 0
+loop_time = 0.4
 # Set up the Service object with the path to the updated chromedriver
 service = Service("C:\\chromedriver-win64\\chromedriver.exe")  # Using double backslashes
 
