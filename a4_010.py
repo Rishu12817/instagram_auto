@@ -8,7 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import time
 import config
-
+flag = False
+loop_time = 0
 # Set up the Service object with the path to the updated chromedriver
 service = Service("C:\\chromedriver-win64\\chromedriver.exe")  # Using double backslashes
 
@@ -43,7 +44,7 @@ try:
     WebDriverWait(driver, 10).until(
         EC.url_contains("instagram.com")
     )
-    print("Login successful!")
+    if flag : print("Login successful!")
     ###################### log in finishes ##############################
     time.sleep(15)
 
@@ -53,7 +54,7 @@ try:
             EC.element_to_be_clickable((By.XPATH, "//div[@aria-label='Close' and @role='button']"))
         )
         close_button.click()
-        print("Closed pop-up successfully!")
+        if flag : print("Closed pop-up successfully!")
     except TimeoutException:
         print("Close button did not appear, continuing execution.")
 
@@ -68,14 +69,14 @@ try:
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Saved')]"))
     )
     saved_menu.click()
-    print("Successfully navigated to saved posts")
+    if flag : print("Successfully navigated to saved posts")
     time.sleep(2)
 
     all_posts_menu = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'All posts')]"))
     )
     all_posts_menu.click()
-    print("Successfully navigated into saved posts collection")
+    if flag : print("Successfully navigated into saved posts collection")
     time.sleep(2)
     ####################### End of navigation #######################
 
@@ -92,7 +93,7 @@ try:
     # Get the total number of posts
     post_elements = driver.find_elements(By.XPATH, posts_xpath)
     total_posts = len(post_elements)
-    print(f"Found {total_posts - 19} posts.")
+    if flag : print(f"Found {total_posts - 19} posts.")
     
     # Iterate over each post
     for i in range(total_posts):
@@ -107,7 +108,7 @@ try:
 
         driver.execute_script("arguments[0].scrollIntoView(true);", post)
         post.click()
-        time.sleep(5)
+        time.sleep(loop_time)
         # time.sleep(50)
 ############################# proflie name ###############################
         try:
@@ -128,17 +129,17 @@ try:
                 EC.presence_of_element_located((By.XPATH, "//h1[contains(@class, '_ap3a')]"))
             )
             caption = caption_elements.text
-            print("\nCaption:\n", caption,"\n\n")
+            if flag : print("\nCaption:\n", caption,"\n\n")
         except Exception as e:
             print("Caption not found:", e)
 ############################ caption of the post ###########################
 
 #################################################################
 
-        time.sleep(5)
-        print("\nClicked on:", post)
-        print("Current URL before wait:", driver.current_url)
-        print(f"Post {i + 1} URL: {driver.current_url}")
+        time.sleep(loop_time)
+        if flag : print("\nClicked on:", post)
+        if flag : print("Current URL before wait:", driver.current_url)
+        if flag : print(f"Post {i + 1} URL: {driver.current_url}")
 
 
 
@@ -155,8 +156,8 @@ try:
         WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.XPATH, posts_xpath))
         )
-        time.sleep(2)
-        print(f"---post no. {i + 1}----------Process Ended-----------------\n\n")
+        time.sleep(loop_time)
+        if flag : print(f"---post no. {i + 1}----------Process Ended-----------------\n\n")
 
 except Exception as e:
     print(f"An error occurred: {e}")

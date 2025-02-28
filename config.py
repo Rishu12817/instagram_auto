@@ -3,9 +3,14 @@
 #     "passwd": "zxcvbnm456"
 # }
 
+# cred = {
+#     "user" : "original__viral_content",
+#     "passwd": "Ashwani@9911"
+# }
+
 cred = {
-    "user" : "original__viral_content",
-    "passwd": "Ashwani@9911"
+    "user" : "ptrr1281",
+    "passwd": "1514000"
 }
 
 
