@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import time
 import config
 
@@ -43,9 +44,18 @@ try:
     )
     print("Login successful!")
     ###################### log in finishes ##############################
+    time.sleep(15)
 
-    time.sleep(10)
-        
+    try:
+        # Wait for up to 10 seconds for the close button to appear and be clickable
+        close_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//div[@aria-label='Close' and @role='button']"))
+        )
+        close_button.click()
+        print("Closed pop-up successfully!")
+    except TimeoutException:
+        print("Close button did not appear, continuing execution.")
+
     ####################### Navigate to saved posts #######################
     burgur_menu = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'More')]"))
@@ -81,7 +91,7 @@ try:
     # Get the total number of posts
     post_elements = driver.find_elements(By.XPATH, posts_xpath)
     total_posts = len(post_elements)
-    print(f"Found {total_posts} posts.")
+    print(f"Found {total_posts - 19} posts.")
     
     # Iterate over each post
     for i in range(total_posts):
@@ -97,13 +107,45 @@ try:
         driver.execute_script("arguments[0].scrollIntoView(true);", post)
         post.click()
         time.sleep(5)
-        time.sleep(50)
-        
+        # time.sleep(50)
+############################# proflie name ###############################
+        try:
+            # Wait for the username to appear
+            username_elements = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//header//div[contains(@class, '_aaqy')]//span"))
+            )
+            user = username_elements.text.split()[0]
+        except Exception as e:
+            print("Username not found:", e)
+############################# proflie name ###############################
+
+
+############################ caption of the post ###########################
+        try:
+            # Wait for the caption to appear
+            caption_elements = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//h1[contains(@class, '_ap3a')]"))
+            )
+            caption = caption_elements.text
+            print("\nCaption:\n", caption,"\n\n")
+        except Exception as e:
+            print("Caption not found:", e)
+############################ caption of the post ###########################
+
+#################################################################
+
+        time.sleep(5)
         print("\nClicked on:", post)
         print("Current URL before wait:", driver.current_url)
-        
         print(f"Post {i + 1} URL: {driver.current_url}")
-        
+
+
+
+        post_profile_name = user
+        post_active_url = driver.current_url
+        post_caption = caption
+
+
         # Go back to the posts list
         driver.back()
         
