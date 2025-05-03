@@ -9,7 +9,7 @@ from selenium.common.exceptions import TimeoutException
 import time
 import config
 flag = False
-loop_time = 0.4
+loop_time = 2
 # Set up the Service object with the path to the updated chromedriver
 service = Service("C:\\chromedriver-win64\\chromedriver.exe")  # Using double backslashes
 
@@ -93,7 +93,7 @@ try:
     # Get the total number of posts
     post_elements = driver.find_elements(By.XPATH, posts_xpath)
     total_posts = len(post_elements)
-    if flag : print(f"Found {total_posts - 19} posts.")
+    print(f"Found {total_posts - 19} posts.")
     
     # Iterate over each post
     for i in range(total_posts):
