@@ -1,5 +1,6 @@
 from database.gp_psql import insert_instagram_post
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -10,13 +11,17 @@ import time
 import config
 
 flag = False
-# Set up the Service object with the path to the updated chromedriver
-service = Service("C:\\Users\\rishu\\OneDrive\\Desktop\\xd\\New folder\\instagram_auto\\chromedriver-win64\\chromedriver.exe")
+# # Set up the Service object with the path to the updated chromedriver
+# service = Service("C:\\Users\\rishu\\OneDrive\\Desktop\\xd\\New folder\\instagram_auto\\chromedriver-win64\\chromedriver.exe")
 # Set up Chrome options
 options = Options()
 options.add_argument('--start-maximized')
 # Initialize the WebDriver
-driver = webdriver.Chrome(service=service, options=options)
+# driver = webdriver.Chrome(service=service, options=options)
+
+
+# This will use your default browser (e.g., Chrome) if the driver is in PATH
+driver = webdriver.Chrome(options=options)  # Or use webdriver.Firefox() for Firefox
 
 def login(driver, max_attempts=3):
     """Attempt login and reattempt if after login the URL is 'https://www.instagram.com/#'."""

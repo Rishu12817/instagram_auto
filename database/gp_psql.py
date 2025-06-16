@@ -1,23 +1,26 @@
 import psycopg2
+import sys
+import os
+import logging
+from datetime import datetime
+# Add parent directory to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import config
 
-# Greenplum Database Configuration
-DB_CONFIG = {
-    "dbname": "mrfalcon",
-    "user": "postgres",
-    "password": "12817",
-    "host": "127.0.0.1",
-    "port": "5432"
-}
+print(config.DB_CONFIG)
 
+# exit()
+table_name = "dim_lookup"
+# table_name = "insta_auto"
 def insert_instagram_post(post_profile_name, post_active_url, post_caption):
     try:
         # Connect to Greenplum (PostgreSQL)
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = psycopg2.connect(**config.DB_CONFIG)
         cursor = conn.cursor()
         # print("Connecting to Greenplum Database")
         # SQL query to insert the data
-        query = """
-        INSERT INTO insta_auto (username, photo_url, caption, posted)
+        query = f"""
+        INSERT INTO {table_name} (username, photo_url, caption, posted)
         VALUES (%s, %s, %s, %s)
         """
 
@@ -33,13 +36,14 @@ def insert_instagram_post(post_profile_name, post_active_url, post_caption):
         if conn:
             cursor.close()
             conn.close()
+            print("✅ Script completed successfully! ✅")
 
 # # Example Usage
 # user = "example_user"
 # driver_current_url = "https://www.instagram.com/p/example_post/"
-# caption = """Your true self is the one that shines the most. 🩷🩵🧡
+# caption = """Your true self is the one that shines the most. 🩵
 
-# Fashion creator @__y__i__mii (Yoshimi Nakaumura) mixes and matches colorful vintage looks as a form of self-expression — creating outfits that make every day more enjoyable when she wears them.   
+# Fashion creator @__y__i__mii (Yoshimi Nakaumura) mixes and matches colorful vintage looks as a form of self-expression — creating outfits that make every day more enjoyable when she wears them.
 
 # “Through my content, I want to convey the message that it’s important to value your individuality. I feel that by showing my true self, I can empathize with and connect with my followers, and make them smile and give them energy.”
 
