@@ -38,6 +38,7 @@ def insert_instagram_post(post_profile_name, post_active_url, post_caption):
             conn.close()
             print("✅ Script completed successfully! ✅")
 
+
 # # Example Usage
 # user = "example_user"
 # driver_current_url = "https://www.instagram.com/p/example_post/"
@@ -50,3 +51,26 @@ def insert_instagram_post(post_profile_name, post_active_url, post_caption):
 # Photos by @__y__i__mii"""
 
 # insert_instagram_post(user, driver_current_url, caption)
+
+# Example usage:
+# fetch_instagram_posts()
+
+
+
+def fetch_instagram_posts():
+    """Fetch all rows from the table."""
+    try:
+        conn = psycopg2.connect(**config.DB_CONFIG)
+        cursor = conn.cursor()
+        query = f"SELECT username, photo_url, caption, posted FROM {table_name}"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        return rows
+        # for row in rows:
+        #     print(row)
+    except Exception as e:
+        print("❌ Error fetching data:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
