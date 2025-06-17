@@ -7,7 +7,7 @@ from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import config
 
-print(config.DB_CONFIG)
+# print(config.DB_CONFIG)
 
 # exit()
 table_name = "dim_lookup"

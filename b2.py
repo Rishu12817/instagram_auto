@@ -1,0 +1,89 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from database.gp_psql import fetch_instagram_posts
+import time
+import os
+
+download_dir = os.path.abspath(os.path.join("downloads", "insta_auto"))
+if not os.path.exists(download_dir):
+    os.makedirs(download_dir)
+
+options = Options()
+options.add_argument('--start-maximized')
+prefs = {
+    "download.default_directory": download_dir,
+    "download.prompt_for_download": False,
+    "directory_upgrade": True,
+    "safebrowsing.enabled": True
+}
+options.add_experimental_option("prefs", prefs)
+driver = webdriver.Chrome(options=options)
+
+rows = fetch_instagram_posts()
+if rows:
+    for row in rows:
+        print("----------------------------------")
+        username, photo_url, caption, posted = row
+        # print(f"User: {username},\n\nURL: {photo_url},\n\nCaption: {caption}, Status: {posted}")
+        print("----------------------------------")
+
+        driver.get("https://snapinsta.to/en")
+
+        # Wait for the input box and paste the URL
+        input_box = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "s_input"))
+        )
+        input_box.clear()
+        input_box.send_keys(photo_url)
+
+        # Click the Download button
+        download_btn = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'btn-default') and contains(., 'Download')]"))
+        )
+        download_btn.click()
+
+        # Wait for the modal and close it (ad may not always appear)
+        try:
+            close_btn = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "closeModalBtn"))
+            )
+            close_btn.click()
+        except Exception:
+            print("No ad modal appeared, continuing...")
+
+        # Wait for the "Download Photo" or "Download Video" button and click it
+        try:
+            WebDriverWait(driver, 15).until(
+                EC.presence_of_element_located((By.ID, "search-result"))
+            )
+            # Wait for the dlModal to disappear if present
+            try:
+                WebDriverWait(driver, 15).until(
+                    EC.invisibility_of_element_located((By.ID, "dlModal"))
+                )
+            except Exception:
+                pass  # If it doesn't exist, continue
+
+            # Extra safety: small sleep to let UI update
+            time.sleep(1)
+
+            download_btn = WebDriverWait(driver, 15).until(
+                EC.element_to_be_clickable((
+                    By.XPATH,
+                    "//a[@title='Download Photo' or @title='Download Video']"
+                ))
+            )
+            download_btn.click()
+            time.sleep(5)  # Wait for download to start
+        except Exception as e:
+            print("Download button not found or not clickable:", e)
+            driver.save_screenshot("error_screenshot.png")
+
+
+# input("Press Enter to close the browser...")
+# driver.quit()
+exit()
+
