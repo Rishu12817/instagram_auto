@@ -11,8 +11,22 @@ download_dir = os.path.abspath(os.path.join("downloads", "insta_auto"))
 if not os.path.exists(download_dir):
     os.makedirs(download_dir)
 
+# options = Options()
+# options.add_argument('--start-maximized')
+
+
+show = True  # Set to True to show browser, False for headless mode
+# show = False  # Set to True to show browser, False for headless mode
+
 options = Options()
 options.add_argument('--start-maximized')
+if not show:
+    options.add_argument('--headless')  # Enable headless mode
+    options.add_argument('--disable-gpu')  # For Windows headless stability
+    options.add_argument('--window-size=1920,1080')  # Set window size for headless
+
+# driver = webdriver.Chrome(options=options)
+
 prefs = {
     "download.default_directory": download_dir,
     "download.prompt_for_download": False,
@@ -25,10 +39,9 @@ driver = webdriver.Chrome(options=options)
 rows = fetch_instagram_posts()
 if rows:
     for row in rows:
-        print("----------------------------------")
+        print("\n---------------Start-------------------")
         username, photo_url, caption, posted = row
-        # print(f"User: {username},\n\nURL: {photo_url},\n\nCaption: {caption}, Status: {posted}")
-        print("----------------------------------")
+        print(f"User: {username},\n\nURL: {photo_url},\n\nCaption: {caption}, Status: {posted}")
 
         driver.get("https://snapinsta.to/en")
 
@@ -77,13 +90,17 @@ if rows:
                 ))
             )
             download_btn.click()
+            print("Download button clicked successfully.")
             time.sleep(5)  # Wait for download to start
         except Exception as e:
             print("Download button not found or not clickable:", e)
             driver.save_screenshot("error_screenshot.png")
-
+        print("---------------End-------------------\n\n")
+else:
+            print("No Instagram posts found.")
 
 # input("Press Enter to close the browser...")
 # driver.quit()
-exit()
+
+# exit()
 
