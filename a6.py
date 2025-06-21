@@ -14,8 +14,14 @@ flag = False
 # # Set up the Service object with the path to the updated chromedriver
 # service = Service("C:\\Users\\rishu\\OneDrive\\Desktop\\xd\\New folder\\instagram_auto\\chromedriver-win64\\chromedriver.exe")
 # Set up Chrome options
+show = False  # Set to True to show browser, False for headless mode
+
 options = Options()
 options.add_argument('--start-maximized')
+if not show:
+    options.add_argument('--headless')  # Enable headless mode
+    options.add_argument('--disable-gpu')  # Optional: for Windows headless stability
+    options.add_argument('--window-size=1920,1080')  # Optional: set window size for headless
 # Initialize the WebDriver
 # driver = webdriver.Chrome(service=service, options=options)
 
@@ -97,7 +103,9 @@ try:
     
     # --------------------- Process Posts in Batches ---------------------
     processed_urls = set()
-    
+    last_insertion_time = time.time()
+    max_wait_seconds = 60  # 10 minutes
+
     while True:
         # Find posts already loaded on the page
         posts = driver.find_elements(By.XPATH, posts_xpath)
@@ -119,23 +127,17 @@ try:
                 try:
                     username_element = WebDriverWait(driver, 15).until(
                         EC.visibility_of_element_located((By.XPATH, "//span[contains(@class, 'xt0psk2')]"))
-                        # EC.visibility_of_element_located((By.XPATH, "//header//div[contains(@class, '_aaqy')]//span"))
                     )
                     user = username_element.text.split()[0]
-                    # print(user)
                 except Exception as e:
                     print(f"Username not found for post {post_url}: {e}")
                     user = "Unknown"
                 
                 try:
-                    # Wait for the main container of the post to load
                     WebDriverWait(driver, 10).until(
                         EC.presence_of_element_located((By.XPATH, "//span[contains(@class, 'xt0psk2')]")))
-                    # Find all potential span elements (captions are sometimes nested)
                     caption_elements = driver.find_elements(By.XPATH, "//span[contains(@class, 'xt0psk2')]")
-                    # Extract all text from these elements
                     caption = "\n".join([el.text for el in caption_elements if el.text.strip()])
-                    # print(caption)
                 except Exception as e:
                     print(f"Caption not found for post {post_url}: {e}")
                     caption = ""
@@ -147,6 +149,7 @@ try:
                 # Close current tab and return to the main saved posts tab
                 driver.close()
                 driver.switch_to.window(driver.window_handles[0])
+            last_insertion_time = time.time()  # Update last insertion time after processing new posts
         else:
             # No new posts found in current view; scroll to load more
             prev_count = len(processed_urls)
@@ -155,6 +158,10 @@ try:
             posts_after_scroll = driver.find_elements(By.XPATH, posts_xpath)
             if len(posts_after_scroll) <= prev_count:
                 print("No new posts loaded, finishing processing.")
+                break
+            # Exit if no new insertion for 10 minutes
+            if time.time() - last_insertion_time > max_wait_seconds:
+                print("No new insertions for 1 minutes. Exiting script.")
                 break
 
 except Exception as e:

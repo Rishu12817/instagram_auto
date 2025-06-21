@@ -17,7 +17,20 @@ def insert_instagram_post(post_profile_name, post_active_url, post_caption):
         # Connect to Greenplum (PostgreSQL)
         conn = psycopg2.connect(**config.DB_CONFIG)
         cursor = conn.cursor()
-        # print("Connecting to Greenplum Database")
+
+        # Check if the record already exists
+        check_query = f"""
+        SELECT 1 FROM {table_name}
+        WHERE username = %s AND photo_url = %s
+        LIMIT 1
+        """
+        cursor.execute(check_query, (post_profile_name, post_active_url))
+        exists = cursor.fetchone()
+
+        if exists:
+            print("⚠️ Record already exists for this user and photo_url. Skipping insertion.")
+            return
+
         # SQL query to insert the data
         query = f"""
         INSERT INTO {table_name} (username, photo_url, caption, posted)
@@ -36,7 +49,7 @@ def insert_instagram_post(post_profile_name, post_active_url, post_caption):
         if conn:
             cursor.close()
             conn.close()
-            print("✅ Script completed successfully! ✅")
+            # print("✅ Script completed successfully! ✅")
 
 
 # # Example Usage

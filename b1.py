@@ -6,9 +6,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from database.gp_psql import fetch_instagram_posts
 import time
 
+show = False  # Set to True to show browser, False for headless mode
+
 options = Options()
 options.add_argument('--start-maximized')
-# driver = webdriver.Chrome()
+if not show:
+    options.add_argument('--headless')  # Enable headless mode
+    options.add_argument('--disable-gpu')  # For Windows headless stability
+    options.add_argument('--window-size=1920,1080')  # Set window size for headless
+
 driver = webdriver.Chrome(options=options)
 
 rows = fetch_instagram_posts()
