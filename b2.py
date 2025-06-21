@@ -7,9 +7,10 @@ from database.gp_psql import fetch_instagram_posts
 import time
 import os
 
-download_dir = os.path.abspath(os.path.join("downloads", "insta_auto"))
+download_dir = os.path.join(os.path.expanduser("~"), "Desktop", "insta_auto")
 if not os.path.exists(download_dir):
     os.makedirs(download_dir)
+print("Download directory:", download_dir)
 
 # options = Options()
 # options.add_argument('--start-maximized')
