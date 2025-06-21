@@ -6,7 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from database.gp_psql import fetch_instagram_posts
 import time
 
-show = False  # Set to True to show browser, False for headless mode
+show = True  # Set to True to show browser, False for headless mode
+# show = False  # Set to True to show browser, False for headless mode
 
 options = Options()
 options.add_argument('--start-maximized')
@@ -20,10 +21,9 @@ driver = webdriver.Chrome(options=options)
 rows = fetch_instagram_posts()
 if rows:
     for row in rows:
-        print("----------------------------------")
+        print("\n---------------Start-------------------")
         username, photo_url, caption, posted = row
-        # print(f"User: {username},\n\nURL: {photo_url},\n\nCaption: {caption}, Status: {posted}")
-        print("----------------------------------")
+        print(f"User: {username},\n\nURL: {photo_url},\n\nCaption: {caption}, Status: {posted}")
 
         driver.get("https://snapinsta.to/en")
 
@@ -61,10 +61,12 @@ if rows:
                 ))
             )
             download_btn.click()
+            print("Download button clicked successfully.")
             time.sleep(5)  # Wait for download to start
         except Exception as e:
             print("Download button not found or not clickable:", e)
             driver.save_screenshot("error_screenshot.png")
+        print("---------------End-------------------\n\n")
 else:
             print("No Instagram posts found.")
 
