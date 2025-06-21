@@ -59,9 +59,10 @@ if rows:
         except Exception as e:
             print("Download button not found or not clickable:", e)
             driver.save_screenshot("error_screenshot.png")
-
+else:
+            print("No Instagram posts found.")
 
 # input("Press Enter to close the browser...")
 # driver.quit()
-exit()
+# exit()
 

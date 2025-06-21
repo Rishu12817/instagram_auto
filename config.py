@@ -28,11 +28,20 @@ cred = {
 #     "port": "5432"
 # }
 
+# # Greenplum Database Configuration
+# DB_CONFIG =  {
+#     'database': 'adfalcon',
+#     'user': 'gpadmin',
+#     'password': 'Gr**nplum17!',
+#     'host': '10.5.53.4',
+#     'port': '5432'
+# }
+
 # Greenplum Database Configuration
-DB_CONFIG =  {
-    'database': 'adfalcon',
-    'user': 'gpadmin',
-    'password': 'Gr**nplum17!',
-    'host': '10.5.53.4',
-    'port': '5432'
+DB_CONFIG = {
+    "dbname": "postgres",
+    "user": "postgres",
+    "password": "12817",
+    "host": "localhost",
+    "port": "5432"
 }
