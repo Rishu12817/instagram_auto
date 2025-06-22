@@ -13,7 +13,9 @@ import config
 flag = False
 # # Set up the Service object with the path to the updated chromedriver
 # service = Service("C:\\Users\\rishu\\OneDrive\\Desktop\\xd\\New folder\\instagram_auto\\chromedriver-win64\\chromedriver.exe")
+
 # Set up Chrome options
+# show = True  # Set to True to show browser, False for headless mode
 show = False  # Set to True to show browser, False for headless mode
 
 options = Options()
@@ -84,12 +86,12 @@ try:
     # --------------------- Navigation to Saved Posts ---------------------
     burger_menu = driver.find_element(By.XPATH, "//span[contains(text(), 'More')]")
     burger_menu.click()
-    
+
     saved_menu = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Saved')]"))
     )
     saved_menu.click()
-    
+
     all_posts_menu = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'All posts')]"))
     )
@@ -100,7 +102,7 @@ try:
     WebDriverWait(driver, 15).until(
         EC.presence_of_all_elements_located((By.XPATH, posts_xpath))
     )
-    
+
     # --------------------- Process Posts in Batches ---------------------
     processed_urls = set()
     last_insertion_time = time.time()
@@ -162,7 +164,7 @@ try:
             # Exit if no new insertion for 10 minutes
             if time.time() - last_insertion_time > max_wait_seconds:
                 print("No new insertions for 1 minutes. Exiting script.")
-                break
+                # break
 
 except Exception as e:
     print(f"An error occurred: {e}")

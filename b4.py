@@ -7,6 +7,7 @@ from database.gp_psql import fetch_instagram_posts
 import time
 import os
 
+
 download_dir = os.path.join(os.path.expanduser("~"), "Desktop", "insta_auto")
 if not os.path.exists(download_dir):
     os.makedirs(download_dir)
@@ -27,6 +28,7 @@ if not show:
     options.add_argument('--window-size=1920,1080')  # Set window size for headless
 
 # driver = webdriver.Chrome(options=options)
+
 
 prefs = {
     "download.default_directory": download_dir,
